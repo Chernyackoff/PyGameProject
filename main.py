@@ -22,7 +22,7 @@ def main():
     bg = Surface((WIN_WIDTH, WIN_HEIGHT))  # Создание видимой поверхности
     bg.fill(Color(BACKGROUND_COLOR))
     hero = player.Player(55, 55)  # создаем героя по (x,y) координатам
-    left = right = False  # по умолчанию — стоим
+    left = right= up = False  # по умолчанию — стоим
 
     level = [
         "-------------------------",
@@ -45,11 +45,18 @@ def main():
         "-                       -",
         "-                       -",
         "-------------------------"]
+    timer = pygame.time.Clock()
 
     running = True
     while running:  # Основной цикл программы
+        timer.tick(60)
         screen.blit(bg, (0, 0))  # Каждую итерацию необходимо всё перерисовывать
         for event in pygame.event.get():  # Обрабатываем события
+            if event.type == KEYDOWN and event.key == K_UP:
+                up = True
+
+            if event.type == KEYUP and event.key == K_UP:
+                up = False
             if event.type == pygame.QUIT:
                 sys.exit(0)
             if event.type == KEYDOWN and event.key == K_LEFT:
@@ -73,7 +80,7 @@ def main():
                 x += PLATFORM_WIDTH  # блоки платформы ставятся на ширине блоков
             y += PLATFORM_HEIGHT  # то же самое и с высотой
             x = 0
-        hero.update(left, right)  # передвижение
+        hero.update(left, right, up)  # передвижение
         hero.draw(screen)  # отображение
         pygame.display.update()  # обновление и вывод всех изменений на экран
         pygame.display.flip()
