@@ -51,9 +51,21 @@ def main():
         "-------------------------"]
     timer = pygame.time.Clock()
 
+    x = y = 0  # координаты
+    for row in level:  # вся строка
+        for col in row:  # каждый символ
+            if col == "-":
+                pf = blocks.Platform(x, y)
+                entities.add(pf)
+                platforms.append(pf)
+
+            x += PLATFORM_WIDTH  # блоки платформы ставятся на ширине блоков
+        y += PLATFORM_HEIGHT  # то же самое и с высотой
+        x = 0
+
     running = True
     while running:  # Основной цикл программы
-        timer.tick(60)
+        timer.tick(30)
         screen.blit(bg, (0, 0))  # Каждую итерацию необходимо всё перерисовывать
         for event in pygame.event.get():  # Обрабатываем события
             if event.type == KEYDOWN and event.key == K_UP:
@@ -72,18 +84,7 @@ def main():
                 right = False
             if event.type == KEYUP and event.key == K_LEFT:
                 left = False
-        x = y = 0  # координаты
-        for row in level:  # вся строка
-            for col in row:  # каждый символ
-                if col == "-":
-                    pf = blocks.Platform(x, y)
-                    entities.add(pf)
-                    platforms.append(pf)
-
-                x += PLATFORM_WIDTH  # блоки платформы ставятся на ширине блоков
-            y += PLATFORM_HEIGHT  # то же самое и с высотой
-            x = 0
-        hero.update(left, right, up)  # передвижение
+        hero.update(left, right, up, platforms)  # передвижение
         entities.draw(screen)  # отображение всего
         pygame.display.update()  # обновление и вывод всех изменений на экран
         pygame.display.flip()
