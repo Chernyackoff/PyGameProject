@@ -1,13 +1,30 @@
 from pygame import *
 import main
+import pyganim
 
 MOVE_SPEED = 7
 WIDTH = 22
 HEIGHT = 32
 COLOR = "#888888"
 
+FPS = 30 # скорость смены кадров
+ANIMATION_RIGHT = [('data/mario/r1.png'),
+            ('data/mario/r2.png'),
+            ('data/mario/r3.png'),
+            ('data/mario/r4.png'),
+            ('data/mario/r5.png')]
+ANIMATION_LEFT = [('data/mario/l1.png'),
+            ('data/mario/l2.png'),
+            ('data/mario/l3.png'),
+            ('data/mario/l4.png'),
+            ('data/mario/l5.png')]
+ANIMATION_JUMP_LEFT = [('data/mario/jl.png', 30)]
+ANIMATION_JUMP_RIGHT = [('data/mario/jr.png', 30)]
+ANIMATION_JUMP = [('data/mario/j.png', 30)]
+ANIMATION_STAY = [('data/mario/0.png', 30)]
+
 JUMP_POWER = 10
-GRAVITY = 0.35 # Сила, которая будет тянуть нас вниз
+GRAVITY = 0.35  # Сила, которая будет тянуть нас вниз
 
 
 class Player(sprite.Sprite):
@@ -22,18 +39,62 @@ class Player(sprite.Sprite):
         self.yvel = 0  # скорость вертикального перемещения
         self.onGround = False  # На земле ли я?
 
+        self.image.set_colorkey(Color(COLOR))  # делаем фон прозрачным
+        #        Анимация движения вправо
+        boltAnim = []
+        for anim in ANIMATION_RIGHT:
+            boltAnim.append((anim, FPS))
+        self.boltAnimRight = pyganim.PygAnimation(boltAnim)
+        self.boltAnimRight.play()
+        #        Анимация движения влево
+        boltAnim = []
+        for anim in ANIMATION_LEFT:
+            boltAnim.append((anim, FPS))
+        self.boltAnimLeft = pyganim.PygAnimation(boltAnim)
+        self.boltAnimLeft.play()
+
+        self.boltAnimStay = pyganim.PygAnimation(ANIMATION_STAY)
+        self.boltAnimStay.play()
+        self.boltAnimStay.blit(self.image, (0, 0))  # По-умолчанию, стоим
+
+        self.boltAnimJumpLeft = pyganim.PygAnimation(ANIMATION_JUMP_LEFT)
+        self.boltAnimJumpLeft.play()
+
+        self.boltAnimJumpRight = pyganim.PygAnimation(ANIMATION_JUMP_RIGHT)
+        self.boltAnimJumpRight.play()
+
+        self.boltAnimJump = pyganim.PygAnimation(ANIMATION_JUMP)
+        self.boltAnimJump.play()
+
     def update(self, left, right, up, platforms):
         if up:
             if self.onGround:  # прыгаем, только когда можем оттолкнуться от земли
                 self.yvel = -JUMP_POWER
+            self.image.fill(Color(COLOR))
+            self.boltAnimJump.blit(self.image, (0, 0))
+
         if left:
             self.xvel = -MOVE_SPEED  # Лево = x- n
+            self.image.fill(Color(COLOR))
+            if up:  # для прыжка влево есть отдельная анимация
+                self.boltAnimJumpLeft.blit(self.image, (0, 0))
+            else:
+                self.boltAnimLeft.blit(self.image, (0, 0))
 
         if right:
             self.xvel = MOVE_SPEED  # Право = x + n
+            self.image.fill(Color(COLOR))
+            if up:
+                self.boltAnimJumpRight.blit(self.image, (0, 0))
+            else:
+                self.boltAnimRight.blit(self.image, (0, 0))
+
 
         if not (left or right):  # стоим, когда нет указаний идти
             self.xvel = 0
+            if not up:
+                self.image.fill(Color(COLOR))
+                self.boltAnimStay.blit(self.image, (0, 0))
 
         if not self.onGround:
             self.yvel += GRAVITY
