@@ -2,6 +2,8 @@ from pygame import *
 import main
 import blocks
 import pyganim
+import monsters
+import sys
 
 MOVE_SPEED = 7
 WIDTH = 22
@@ -39,6 +41,7 @@ class Player(sprite.Sprite):
         self.rect = Rect(x, y, WIDTH, HEIGHT)  # прямоугольный объект
         self.yvel = 0  # скорость вертикального перемещения
         self.onGround = False  # На земле ли я?
+        self.winner = False
 
         self.image.set_colorkey(Color(COLOR))  # делаем фон прозрачным
         #        Анимация движения вправо
@@ -126,11 +129,15 @@ class Player(sprite.Sprite):
                     self.rect.top = p.rect.bottom  # то не движется вверх
                     self.yvel = 0  # и энергия прыжка пропадает
 
-                if isinstance(p, blocks.BlockDie):  # если пересакаемый блок - blocks.BlockDie
+                if isinstance(p, blocks.BlockDie) or isinstance(p, monsters.Monster):  # если пересакаемый блок- blocks.BlockDie или Monster
                     self.die()  # умираем
 
                 elif isinstance(p, blocks.BlockTeleport):
                     self.teleporting(p.goX, p.goY)
+
+                elif isinstance(p, blocks.Princess):  # если коснулись принцессы
+                    self.winner = True  # победили!!!
+                    sys.exit(0)
 
     def die(self):
         time.wait(500)

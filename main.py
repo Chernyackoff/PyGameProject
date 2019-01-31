@@ -1,6 +1,7 @@
 from pygame import *
 import pygame
 import player
+import monsters
 import blocks
 import sys
 
@@ -26,6 +27,10 @@ def main():
     entities = pygame.sprite.Group()  # Все объекты
     platforms = []  # то, во что мы будем врезаться или опираться
     entities.add(hero)
+
+    animatedEntities = pygame.sprite.Group()  # все анимированные объекты, за исключением героя
+    monster = pygame.sprite.Group()  # Все передвигающиеся объекты
+
     level = [
         "----------------------------------",
         "-                                -",
@@ -36,7 +41,7 @@ def main():
         "-----                            -",
         "-                                -",
         "-                  ----     --- -",
-        "-  -                             -",
+        "-P -                             -",
         "----                             -",
         "-            ----                -",
         "-                            --- -",
@@ -57,8 +62,6 @@ def main():
     total_level_width = len(level[0]) * PLATFORM_WIDTH  # Высчитываем фактическую ширину уровня
     total_level_height = len(level) * PLATFORM_HEIGHT  # высоту
 
-    animatedEntities = pygame.sprite.Group()  # все анимированные объекты, за исключением героя
-
     camera = Camera(camera_configure, total_level_width, total_level_height)
 
     x = y = 0  # координаты
@@ -74,6 +77,12 @@ def main():
                 entities.add(bd)
                 platforms.append(bd)
 
+            if col == "P":
+                pr = blocks.Princess(x, y)
+                entities.add(pr)
+                platforms.append(pr)
+                animatedEntities.add(pr)
+
             x += PLATFORM_WIDTH  # блоки платформы ставятся на ширине блоков
         y += PLATFORM_HEIGHT  # то же самое и с высотой
         x = 0
@@ -83,6 +92,11 @@ def main():
     platforms.append(tp)
     animatedEntities.add(tp)
     running = True
+
+    mn = monsters.Monster(190, 230, 2, 3, 150, 15)
+    entities.add(mn)
+    platforms.append(mn)
+    monster.add(mn)
 
     while running:  # Основной цикл программы
         timer.tick(30)
@@ -111,6 +125,7 @@ def main():
         pygame.display.update()  # обновление и вывод всех изменений на экран
         pygame.display.flip()
         animatedEntities.update()
+        monster.update(platforms)  # передвигаем всех монстров
 
 
 

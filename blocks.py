@@ -5,6 +5,10 @@ import pyganim
 PLATFORM_WIDTH = 32
 PLATFORM_HEIGHT = 32
 
+ANIMATION_PRINCESS = [
+            'data/blocks/princess_l.png',
+            'data/blocks/princess_r.png']
+
 ANIMATION_BLOCKTELEPORT = [
             'data/blocks/portal2.png',
             'data/blocks/portal1.png']
@@ -35,4 +39,18 @@ class BlockTeleport(Platform):
         self.boltAnim.play()
 
     def update(self):
+        self.boltAnim.blit(self.image, (0, 0))
+
+
+class Princess(Platform):
+    def __init__(self, x, y):
+        Platform.__init__(self, x, y)
+        boltAnim = []
+        for anim in ANIMATION_PRINCESS:
+            boltAnim.append((anim, 80))
+        self.boltAnim = pyganim.PygAnimation(boltAnim)
+        self.boltAnim.play()
+
+    def update(self):
+        self.image.set_colorkey(Color("#888888"))
         self.boltAnim.blit(self.image, (0, 0))
