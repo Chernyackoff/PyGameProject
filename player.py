@@ -1,5 +1,6 @@
 from pygame import *
 import main
+import blocks
 import pyganim
 
 MOVE_SPEED = 7
@@ -124,3 +125,17 @@ class Player(sprite.Sprite):
                 if yvel < 0:  # если движется вверх
                     self.rect.top = p.rect.bottom  # то не движется вверх
                     self.yvel = 0  # и энергия прыжка пропадает
+
+                if isinstance(p, blocks.BlockDie):  # если пересакаемый блок - blocks.BlockDie
+                    self.die()  # умираем
+
+                elif isinstance(p, blocks.BlockTeleport):
+                    self.teleporting(p.goX, p.goY)
+
+    def die(self):
+        time.wait(500)
+        self.teleporting(self.startX, self.startY)  # перемещаемся в начальные координаты
+
+    def teleporting(self, goX, goY):
+        self.rect.x = goX
+        self.rect.y = goY

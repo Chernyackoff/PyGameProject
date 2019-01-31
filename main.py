@@ -29,26 +29,26 @@ def main():
     level = [
         "----------------------------------",
         "-                                -",
-        "-                       --       -",
+        "-                       *        -",
         "-                                -",
         "-            --                  -",
         "-                           --   -",
-        "--                               -",
+        "-----                            -",
         "-                                -",
-        "-                   ----     --- -",
-        "-                                -",
-        "--                               -",
+        "-                  ----     --- -",
+        "-  -                             -",
+        "----                             -",
         "-            ----                -",
         "-                            --- -",
         "-                                -",
         "-                  --            -",
-        "-      ---                       -",
+        "-      *-*                       -",
         "-                                -",
-        "-   -------         ----         -",
+        "-   -------                      -",
+        "-             --                 -",
         "-                                -",
-        "-                         -      -",
-        "-                            --  -",
-        "-                                -",
+        "-                 --             -",
+        "-        --**                    -",
         "-                                -",
         "----------------------------------"]
 
@@ -56,6 +56,8 @@ def main():
 
     total_level_width = len(level[0]) * PLATFORM_WIDTH  # Высчитываем фактическую ширину уровня
     total_level_height = len(level) * PLATFORM_HEIGHT  # высоту
+
+    animatedEntities = pygame.sprite.Group()  # все анимированные объекты, за исключением героя
 
     camera = Camera(camera_configure, total_level_width, total_level_height)
 
@@ -67,11 +69,21 @@ def main():
                 entities.add(pf)
                 platforms.append(pf)
 
+            if col == "*":
+                bd = blocks.BlockDie(x, y)
+                entities.add(bd)
+                platforms.append(bd)
+
             x += PLATFORM_WIDTH  # блоки платформы ставятся на ширине блоков
         y += PLATFORM_HEIGHT  # то же самое и с высотой
         x = 0
 
+    tp = blocks.BlockTeleport(128, 512, 800, 64)
+    entities.add(tp)
+    platforms.append(tp)
+    animatedEntities.add(tp)
     running = True
+
     while running:  # Основной цикл программы
         timer.tick(30)
         screen.blit(bg.image, bg.rect)
@@ -98,6 +110,7 @@ def main():
             screen.blit(e.image, camera.apply(e))
         pygame.display.update()  # обновление и вывод всех изменений на экран
         pygame.display.flip()
+        animatedEntities.update()
 
 
 
