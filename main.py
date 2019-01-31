@@ -19,10 +19,9 @@ screen = pygame.display.set_mode(DISPLAY)
 pygame.display.set_caption("Moy Super Mario")  # Пишем в шапку
 
 def main():
-    bg = Surface((WIN_WIDTH, WIN_HEIGHT))  # Создание видимой поверхности
-    bg.fill(Color(BACKGROUND_COLOR))
+    bg = Background('data/background.jpg', [0, 0])
     hero = player.Player(55, 55)  # создаем героя по (x,y) координатам
-    left = right= up = False  # по умолчанию — стоим
+    left = right = up = False  # по умолчанию — стоим
 
     entities = pygame.sprite.Group()  # Все объекты
     platforms = []  # то, во что мы будем врезаться или опираться
@@ -33,16 +32,16 @@ def main():
         "-                       --       -",
         "-                                -",
         "-            --                  -",
-        "-                                -",
+        "-                           --   -",
         "--                               -",
         "-                                -",
         "-                   ----     --- -",
         "-                                -",
         "--                               -",
-        "-                                -",
+        "-            ----                -",
         "-                            --- -",
         "-                                -",
-        "-                                -",
+        "-                  --            -",
         "-      ---                       -",
         "-                                -",
         "-   -------         ----         -",
@@ -75,7 +74,7 @@ def main():
     running = True
     while running:  # Основной цикл программы
         timer.tick(30)
-        screen.blit(bg, (0, 0))  # Каждую итерацию необходимо всё перерисовывать
+        screen.blit(bg.image, bg.rect)
         for event in pygame.event.get():  # Обрабатываем события
             if event.type == KEYDOWN and event.key == K_UP:
                 up = True
@@ -124,6 +123,14 @@ def camera_configure(camera, target_rect):
     t = min(0, t)  # Не движемся дальше верхней границы
 
     return Rect(l, t, w, h)
+
+
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image_file, location):
+        pygame.sprite.Sprite.__init__(self)  #call Sprite initializer
+        self.image = pygame.image.load(image_file)
+        self.rect = self.image.get_rect()
+        self.rect.left, self.rect.top = location
 
 if __name__ == "__main__":
     main()

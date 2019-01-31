@@ -24,7 +24,7 @@ ANIMATION_JUMP = [('data/mario/j.png', 30)]
 ANIMATION_STAY = [('data/mario/0.png', 30)]
 
 JUMP_POWER = 10
-GRAVITY = 0.45  # Сила, которая будет тянуть нас вниз
+GRAVITY = 0.4  # Сила, которая будет тянуть нас вниз
 
 
 class Player(sprite.Sprite):
