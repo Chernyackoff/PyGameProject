@@ -24,7 +24,7 @@ ANIMATION_JUMP = [('data/mario/j.png', 30)]
 ANIMATION_STAY = [('data/mario/0.png', 30)]
 
 JUMP_POWER = 10
-GRAVITY = 0.35  # Сила, которая будет тянуть нас вниз
+GRAVITY = 0.45  # Сила, которая будет тянуть нас вниз
 
 
 class Player(sprite.Sprite):
@@ -88,7 +88,6 @@ class Player(sprite.Sprite):
                 self.boltAnimJumpRight.blit(self.image, (0, 0))
             else:
                 self.boltAnimRight.blit(self.image, (0, 0))
-
 
         if not (left or right):  # стоим, когда нет указаний идти
             self.xvel = 0
