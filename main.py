@@ -1,6 +1,7 @@
 from pygame import *
 import pygame
 import player
+import blocks
 import sys
 
 WIN_WIDTH = 800 #Ширина окна
@@ -24,6 +25,9 @@ def main():
     hero = player.Player(55, 55)  # создаем героя по (x,y) координатам
     left = right= up = False  # по умолчанию — стоим
 
+    entities = pygame.sprite.Group()  # Все объекты
+    platforms = []  # то, во что мы будем врезаться или опираться
+    entities.add(hero)
     level = [
         "-------------------------",
         "-                       -",
@@ -72,16 +76,15 @@ def main():
         for row in level:  # вся строка
             for col in row:  # каждый символ
                 if col == "-":
-                    # создаем блок, заливаем его цветом и рисеум его
-                    pf = Surface((PLATFORM_WIDTH, PLATFORM_HEIGHT))
-                    pf.fill(Color(PLATFORM_COLOR))
-                    screen.blit(pf, (x, y))
+                    pf = blocks.Platform(x, y)
+                    entities.add(pf)
+                    platforms.append(pf)
 
                 x += PLATFORM_WIDTH  # блоки платформы ставятся на ширине блоков
             y += PLATFORM_HEIGHT  # то же самое и с высотой
             x = 0
         hero.update(left, right, up)  # передвижение
-        hero.draw(screen)  # отображение
+        entities.draw(screen)  # отображение всего
         pygame.display.update()  # обновление и вывод всех изменений на экран
         pygame.display.flip()
 
