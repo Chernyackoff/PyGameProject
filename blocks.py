@@ -47,10 +47,10 @@ class Princess(Platform):
         Platform.__init__(self, x, y)
         boltAnim = []
         for anim in ANIMATION_PRINCESS:
-            boltAnim.append((anim, 80))
+            boltAnim.append((anim, 500))
         self.boltAnim = pyganim.PygAnimation(boltAnim)
         self.boltAnim.play()
 
     def update(self):
-        self.image.set_colorkey(Color("#888888"))
+        self.image.set_colorkey(Color("#2110FF"))
         self.boltAnim.blit(self.image, (0, 0))
